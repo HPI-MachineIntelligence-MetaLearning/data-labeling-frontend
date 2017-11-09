@@ -7,7 +7,7 @@ import $ from 'jquery';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'app';
+  title = 'Data Labeling';
 
   public buildings = [ ];
   public showUploader = true;
