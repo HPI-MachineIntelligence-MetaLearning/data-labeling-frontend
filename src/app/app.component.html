@@ -2,8 +2,9 @@
   <h3>
     Welcome to Data labeling!
   </h3>
-  <div id="next" *ngIf="showUploader == false">
+  <div id="next" *ngIf="showUploader == false" class="button-row">
     <button mat-raised-button color="primary" (click)=nextImage()>Next</button>
+    <button mat-raised-button color="primary" (click)=resetImage()>Reset</button>
   </div>
 
   <div *ngIf="showUploader" id="msg">{{msg}}</div>
