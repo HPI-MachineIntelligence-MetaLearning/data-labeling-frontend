@@ -65,6 +65,10 @@ export class AppComponent implements OnInit {
     reader.readAsDataURL(this.buildings[this.index]);
   }
 
+  public resetImage() {
+    this.processCanvas();
+  }
+
   public handleMouseDown(e) {
     const canvas: any = document.getElementById('imageCanvas');
     const ctx = canvas.getContext('2d');
