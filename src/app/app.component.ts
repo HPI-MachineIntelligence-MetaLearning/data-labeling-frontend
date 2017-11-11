@@ -19,6 +19,8 @@ export class AppComponent implements OnInit {
   public index = 0;
   public imgAmount;
   public msg;
+  public boundingBoxes = [];
+  public imgName = '';
 
   constructor() { }
 
@@ -56,17 +58,31 @@ export class AppComponent implements OnInit {
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
-        console.log(canvas.width, img.width, 'width');
-        console.log(canvas.height, img.height, 'height');
-        this.imgSize = canvas.height + ' x ' + canvas.width;
       };
       img.src = e.target['result'];
     };
+    this.imgName = this.buildings[this.index]['name'];
     reader.readAsDataURL(this.buildings[this.index]);
   }
 
   public resetImage() {
     this.processCanvas();
+  }
+
+  public saveToCsv() {
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    this.boundingBoxes.forEach(function (rowArray) {
+      const row = rowArray.join(';');
+      csvContent += row + '\r\n'; // add carriage return
+    });
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'boundingBoxes.csv');
+    document.body.appendChild(link); // Required for FF
+
+    link.click(); // This will download the data file named "my_data.csv".
+    this.nextImage();
   }
 
   public handleMouseDown(e) {
@@ -84,7 +100,7 @@ export class AppComponent implements OnInit {
       this.isDrawing = false;
       ctx.beginPath();
       ctx.rect(this.startX, this.startY, mouseX - this.startX, mouseY - this.startY);
-      this.recSize = '(' + this.startX + ',' + this.startY + ')' + ' x ' + '(' + mouseX + ',' + mouseY + ')';
+      this.boundingBoxes.push([this.imgName, this.startX, this.startY, mouseX, mouseY]);
       ctx.stroke();
       canvas.style.cursor = 'default';
     } else {

@@ -5,6 +5,7 @@
   <div id="next" *ngIf="showUploader == false" class="button-row">
     <button mat-raised-button color="primary" (click)=nextImage()>Next</button>
     <button mat-raised-button color="primary" (click)=resetImage()>Reset</button>
+    <button mat-raised-button color="primary" (click)=saveToCsv()>Save</button>
   </div>
 
   <div *ngIf="showUploader" id="msg">{{msg}}</div>
@@ -12,10 +13,6 @@
   <input matInput id="imageImport" type="file" multiple="multiple" (change)=getImages() *ngIf="showUploader"/>
 
   <canvas [hidden]="showUploader" id="imageCanvas"> </canvas>
-
-  <div [hidden]="showUploader">The image size is: {{imgSize}}</div>
-
-  <div [hidden]="showUploader">The rectangle size is: {{recSize}}</div>
 
 </div>
 
