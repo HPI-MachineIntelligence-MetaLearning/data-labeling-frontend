@@ -50,7 +50,6 @@ export class AppComponent implements OnInit {
     const reader = new FileReader();
 
     reader.onload = function (e) {
-      // TODO: Reset Canvas Size
       const canvas: any = document.getElementById('imageCanvas');
       const ctx = canvas.getContext('2d');
       const img: any = new Image();
@@ -73,15 +72,15 @@ export class AppComponent implements OnInit {
     let csvContent = 'data:text/csv;charset=utf-8,';
     this.boundingBoxes.forEach(function (rowArray) {
       const row = rowArray.join(';');
-      csvContent += row + '\r\n'; // add carriage return
+      csvContent += row + '\r\n';
     });
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
     link.setAttribute('download', 'boundingBoxes.csv');
-    document.body.appendChild(link); // Required for FF
+    document.body.appendChild(link);
 
-    link.click(); // This will download the data file named "my_data.csv".
+    link.click();
     this.boundingBoxes = [['img', 'UpperLeftX', 'UpperLeftY', 'LowerRightX', 'LowerRightY']];
     this.nextImage();
   }
