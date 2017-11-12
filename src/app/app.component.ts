@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   public index = 0;
   public imgAmount;
   public msg;
-  public boundingBoxes = [];
+  public boundingBoxes = [['img', 'UpperLeftX', 'UpperLeftY', 'LowerRightX', 'LowerRightY']];
   public imgName = '';
 
   constructor() { }
@@ -82,6 +82,7 @@ export class AppComponent implements OnInit {
     document.body.appendChild(link); // Required for FF
 
     link.click(); // This will download the data file named "my_data.csv".
+    this.boundingBoxes = [['img', 'UpperLeftX', 'UpperLeftY', 'LowerRightX', 'LowerRightY']];
     this.nextImage();
   }
 
