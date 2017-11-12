@@ -12,3 +12,7 @@
 #msg {
     margin-bottom: 2%;
 }
+
+#imageCanvas {
+    border: 2px solid black;
+}
