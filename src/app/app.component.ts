@@ -11,7 +11,6 @@ export class AppComponent implements OnInit {
 
   public buildings = [ ];
   public showUploader = true;
-  public isDrawing = false;
   public startX;
   public startY;
   public imgSize;
@@ -26,6 +25,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     $('#imageCanvas').mousedown(e => this.handleMouseDown(e));
+    $('#imageCanvas').mouseup(e => this.handleMouseUp(e));
   }
 
   public getImages() {
@@ -93,23 +93,28 @@ export class AppComponent implements OnInit {
     const offsetY = canvasOffset.top;
     const mouseX = Math.floor(e.clientX - offsetX);
     const mouseY = Math.floor(e.clientY - offsetY);
+    this.startX = mouseX;
+    this.startY = mouseY;
+  }
 
-    // Put your mousedown stuff here
+  public handleMouseUp(e) {
+    const canvasOffset = $('#imageCanvas').offset();
+    const canvas: any = document.getElementById('imageCanvas');
+    const ctx = canvas.getContext('2d');
+    const offsetX = canvasOffset.left;
+    const offsetY = canvasOffset.top;
+    const endX = Math.floor(e.clientX - offsetX);
+    const endY = Math.floor(e.clientY - offsetY);
+    this.drawBoundingBox(ctx, canvas, this.startX, this.startY, endX, endY);
+  }
+
+  public drawBoundingBox(ctx, canvas, startX, startY, endX, endY) {
     ctx.strokeStyle = '#F00';
-    if (this.isDrawing) {
-      this.isDrawing = false;
-      ctx.beginPath();
-      ctx.rect(this.startX, this.startY, mouseX - this.startX, mouseY - this.startY);
-      this.boundingBoxes.push([this.imgName, this.startX, this.startY, mouseX, mouseY]);
-      ctx.stroke();
-      canvas.style.cursor = 'default';
-    } else {
-      this.isDrawing = true;
-      this.startX = mouseX;
-      this.startY = mouseY;
-      canvas.style.cursor = 'default';
-    }
-
+    ctx.beginPath();
+    ctx.rect(startX, startY, endX - this.startX, endY - startY);
+    this.boundingBoxes.push([this.imgName, this.startX, this.startY, endX, endY]);
+    ctx.stroke();
+    canvas.style.cursor = 'default';
   }
 
 }
