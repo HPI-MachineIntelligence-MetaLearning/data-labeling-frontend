@@ -9,17 +9,17 @@ import $ from 'jquery';
 export class AppComponent implements OnInit {
   title = 'Data Labeling';
 
-  public buildings = [ ];
-  public showUploader = true;
-  public startX;
-  public startY;
-  public imgSize;
-  public recSize;
-  public index = 0;
-  public imgAmount;
-  public msg;
-  public boundingBoxes = [['img', 'UpperLeftX', 'UpperLeftY', 'LowerRightX', 'LowerRightY']];
-  public imgName = '';
+  private buildings = [ ];
+  private showUploader = true;
+  private startX;
+  private startY;
+  private imgSize;
+  private recSize;
+  private index = 0;
+  private imgAmount;
+  private msg;
+  private boundingBoxes = [['img', 'UpperLeftX', 'UpperLeftY', 'LowerRightX', 'LowerRightY']];
+  private imgName = '';
 
   constructor() { }
 
@@ -28,14 +28,14 @@ export class AppComponent implements OnInit {
     $('#imageCanvas').mouseup(e => this.handleMouseUp(e));
   }
 
-  public getImages() {
+  private getImages() {
     this.buildings = document.getElementById('imageImport')['files'];
     this.imgAmount = Object.keys(this.buildings).length;
     this.processCanvas();
     this.showUploader = false;
   }
 
-  public nextImage() {
+  private nextImage() {
     this.index++;
     if (this.index >= this.imgAmount) {
       this.showUploader = true;
@@ -46,7 +46,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  public processCanvas() {
+  private processCanvas() {
     const reader = new FileReader();
 
     reader.onload = function (e) {
@@ -64,11 +64,11 @@ export class AppComponent implements OnInit {
     reader.readAsDataURL(this.buildings[this.index]);
   }
 
-  public resetImage() {
+  private resetImage() {
     this.processCanvas();
   }
 
-  public saveToCsv() {
+  private saveToCsv() {
     let csvContent = 'data:text/csv;charset=utf-8,';
     this.boundingBoxes.forEach(function (rowArray) {
       const row = rowArray.join(';');
@@ -85,7 +85,7 @@ export class AppComponent implements OnInit {
     this.nextImage();
   }
 
-  public handleMouseDown(e) {
+  private handleMouseDown(e) {
     const canvas: any = document.getElementById('imageCanvas');
     const ctx = canvas.getContext('2d');
     const canvasOffset = $('#imageCanvas').offset();
@@ -97,7 +97,7 @@ export class AppComponent implements OnInit {
     this.startY = mouseY;
   }
 
-  public handleMouseUp(e) {
+  private handleMouseUp(e) {
     const canvasOffset = $('#imageCanvas').offset();
     const canvas: any = document.getElementById('imageCanvas');
     const ctx = canvas.getContext('2d');
@@ -108,7 +108,7 @@ export class AppComponent implements OnInit {
     this.drawBoundingBox(ctx, canvas, this.startX, this.startY, endX, endY);
   }
 
-  public drawBoundingBox(ctx, canvas, startX, startY, endX, endY) {
+  private drawBoundingBox(ctx, canvas, startX, startY, endX, endY) {
     ctx.strokeStyle = '#F00';
     ctx.beginPath();
     ctx.rect(startX, startY, endX - this.startX, endY - startY);
