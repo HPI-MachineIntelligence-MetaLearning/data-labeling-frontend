@@ -21,8 +21,6 @@ export class AppComponent implements OnInit {
   private boundingBoxes = [['img', 'UpperLeftX', 'UpperLeftY', 'LowerRightX', 'LowerRightY']];
   private imgName = '';
 
-  constructor() { }
-
   ngOnInit() {
     $('#imageCanvas').mousedown(e => this.handleMouseDown(e));
     $('#imageCanvas').mouseup(e => this.handleMouseUp(e));
