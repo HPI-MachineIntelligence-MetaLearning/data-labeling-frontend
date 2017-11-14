@@ -111,7 +111,7 @@ export class AppComponent implements OnInit {
     ctx.strokeStyle = '#F00';
     ctx.beginPath();
     ctx.rect(startX, startY, endX - this.startX, endY - startY);
-    this.boundingBoxes.push([this.imgName, this.startX, this.startY, endX, endY]);
+    this.boundingBoxes.push([this.startX, this.startY, endX, endY]);
     ctx.stroke();
     canvas.style.cursor = 'default';
   }
