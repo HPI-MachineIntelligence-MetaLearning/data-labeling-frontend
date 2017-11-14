@@ -76,8 +76,7 @@ export class AppComponent implements OnInit {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    const fileName = this.imgName.split('.');
-    link.setAttribute('download', fileName[0] + '.csv');
+    link.setAttribute('download', this.imgName + '.csv');
     document.body.appendChild(link);
 
     link.click();
