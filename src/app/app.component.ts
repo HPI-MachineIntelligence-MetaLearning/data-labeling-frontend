@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
   private index = 0;
   private imgAmount;
   private msg;
-  private boundingBoxes = [['img', 'UpperLeftX', 'UpperLeftY', 'LowerRightX', 'LowerRightY']];
+  private boundingBoxes = [[]];
   private imgName = '';
 
   ngOnInit() {
@@ -34,6 +34,7 @@ export class AppComponent implements OnInit {
   }
 
   private nextImage() {
+    this.saveToCsv();
     this.index++;
     if (this.index >= this.imgAmount) {
       this.showUploader = true;
@@ -75,12 +76,11 @@ export class AppComponent implements OnInit {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', 'boundingBoxes.csv');
+    link.setAttribute('download', this.imgName + '.csv');
     document.body.appendChild(link);
 
     link.click();
-    this.boundingBoxes = [['img', 'UpperLeftX', 'UpperLeftY', 'LowerRightX', 'LowerRightY']];
-    this.nextImage();
+    this.boundingBoxes = [[]];
   }
 
   private handleMouseDown(e) {
@@ -110,7 +110,7 @@ export class AppComponent implements OnInit {
     ctx.strokeStyle = '#F00';
     ctx.beginPath();
     ctx.rect(startX, startY, endX - this.startX, endY - startY);
-    this.boundingBoxes.push([this.imgName, this.startX, this.startY, endX, endY]);
+    this.boundingBoxes.push([this.startX, this.startY, endX, endY]);
     ctx.stroke();
     canvas.style.cursor = 'default';
   }
