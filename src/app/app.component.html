@@ -9,7 +9,7 @@
 
   <div *ngIf="showUploader" id="msg">{{msg}}</div>
 
-  <input matInput id="imageImport" type="file" multiple="multiple" (change)=getImages() *ngIf="showUploader"/>
+  <input matInput id="imageImport" type="file" multiple="multiple" (change)=onChange($event) *ngIf="showUploader"/>
 
   <canvas [hidden]="showUploader" id="imageCanvas"> </canvas>
 

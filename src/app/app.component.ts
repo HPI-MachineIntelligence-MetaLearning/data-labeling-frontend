@@ -1,5 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import $ from 'jquery';
+import { HttpClientService } from './http-client.service';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,8 @@ import $ from 'jquery';
 })
 export class AppComponent implements OnInit {
   title = 'Data Labeling';
+
+  constructor(private _service: HttpClientService) { }
 
   private buildings = [ ];
   private showUploader = true;
@@ -20,10 +23,20 @@ export class AppComponent implements OnInit {
   private msg;
   private boundingBoxes = [[]];
   private imgName = '';
+  private imgData;
 
   ngOnInit() {
     $('#imageCanvas').mousedown(e => this.handleMouseDown(e));
     $('#imageCanvas').mouseup(e => this.handleMouseUp(e));
+  }
+
+  onChange(event) {
+    const file = event.srcElement.files;
+    const postData = { }; // Put your form data variable. This is only example.
+    this._service.postWithFile('http://127.0.0.1:5000/', postData, file).then(result => {
+      console.log(result, 'result');
+      this.getImages();
+    });
   }
 
   private getImages() {

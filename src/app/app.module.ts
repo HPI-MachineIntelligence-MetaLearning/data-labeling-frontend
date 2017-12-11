@@ -3,6 +3,10 @@ import { NgModule } from '@angular/core';
 import { MatButtonModule, MatCheckboxModule } from '@angular/material';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import $ from 'jquery';
+import { HttpClientService } from './http-client.service';
+import { RouterModule, Routes, ActivatedRoute } from '@angular/router';
+
+import { HttpModule } from '@angular/http';
 
 
 import { AppComponent } from './app.component';
@@ -16,9 +20,10 @@ import { AppComponent } from './app.component';
     BrowserModule,
     MatButtonModule,
     MatCheckboxModule,
-    NoopAnimationsModule
+    NoopAnimationsModule,
+    HttpModule,
   ],
-  providers: [],
+  providers: [HttpClientService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
