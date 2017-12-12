@@ -71,14 +71,15 @@ export class AppComponent implements OnInit {
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
         ctx.beginPath();
-        ctx.rect(detectedBoundingBoxes[0][0], detectedBoundingBoxes[0][1],
-          detectedBoundingBoxes[0][2] - detectedBoundingBoxes[0][0],
-          detectedBoundingBoxes[0][3] - detectedBoundingBoxes[0][1]);
-        // ctx.rect(188, 50, 200, 100);
-        ctx.fillStyle = 'yellow';
-        ctx.fill();
+        const x = detectedBoundingBoxes[0][0][0];
+        const y = detectedBoundingBoxes[0][0][1];
+        const height = detectedBoundingBoxes[0][0][2];
+        const width = detectedBoundingBoxes[0][0][3];
+        ctx.rect(x, y, height, width);
+        // ctx.fillStyle = 'yellow';
+        // ctx.fill();
         ctx.lineWidth = 7;
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = 'red';
         ctx.stroke();
       };
       img.src = e.target['result'];
