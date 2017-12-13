@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
-import { Http, Headers, Response, Request, RequestMethod, URLSearchParams, RequestOptions } from "@angular/http";
+import { Http, Headers, Response, Request, RequestMethod, URLSearchParams, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-declare var $: any;
+// declare var $: any;
+import $ from 'jquery';
 
 @Injectable()
 export class HttpClientService {
@@ -16,12 +17,15 @@ export class HttpClientService {
 
   postWithFile(url: string, postData: any, files: File[]) {
 
-    let headers = new Headers();
-    let formData: FormData = new FormData();
-    formData.append('image', files[0], files[0].name);
+    const headers = new Headers();
+    const formData: FormData = new FormData();
 
-    if (postData !== "" && postData !== undefined && postData !== null) {
-      for (var property in postData) {
+    Array.from(files).forEach(file => {
+      formData.append('image', file, file['name']);
+    });
+
+    if (postData !== '' && postData !== undefined && postData !== null) {
+      for (const property in postData) {
         if (postData.hasOwnProperty(property)) {
           formData.append(property, postData[property]);
         }
