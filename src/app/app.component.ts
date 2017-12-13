@@ -26,6 +26,17 @@ export class AppComponent implements OnInit {
   private imgData;
   private detectedBoundingBoxes;
 
+  private labelMapping = {
+    0: 'other',
+    1: 'berlinerdom',
+    2: 'fernsehturm',
+    3: 'funkturm',
+    4: 'reichstag',
+    5: 'rotesrathaus',
+    6: 'siegessaeule',
+    7: 'none'
+  };
+
   ngOnInit() {
     $('#imageCanvas').mousedown(e => this.handleMouseDown(e));
     $('#imageCanvas').mouseup(e => this.handleMouseUp(e));
@@ -35,6 +46,7 @@ export class AppComponent implements OnInit {
     const file = event.srcElement.files;
     const postData = { }; // Put your form data variable. This is only example.
     this._service.postWithFile('http://127.0.0.1:5000/', postData, file).then(result => {
+      console.log(result);
       this.detectedBoundingBoxes = result['bboxes'];
       this.getImages(this.detectedBoundingBoxes);
     });
@@ -76,9 +88,7 @@ export class AppComponent implements OnInit {
         const height = detectedBoundingBoxes[0][0][2];
         const width = detectedBoundingBoxes[0][0][3];
         ctx.rect(x, y, height, width);
-        // ctx.fillStyle = 'yellow';
-        // ctx.fill();
-        ctx.lineWidth = 7;
+        ctx.lineWidth = 5;
         ctx.strokeStyle = 'red';
         ctx.stroke();
       };
@@ -86,33 +96,6 @@ export class AppComponent implements OnInit {
     };
     this.imgName = this.buildings[this.index]['name'];
     reader.readAsDataURL(this.buildings[this.index]);
-    // this.drawBBoxes();
-  }
-
-  private drawBBoxes() {
-    const canvas: any = document.getElementById('imageCanvas');
-    const ctx = canvas.getContext('2d');
-    this.detectedBoundingBoxes.forEach(function(bbox) {
-      console.log(bbox[0]);
-      console.log(bbox[0][0], bbox[0][1], bbox[0][2], bbox[0][3]);
-      console.log(canvas, ctx);
-      ctx.strokeStyle = '#F00';
-      ctx.beginPath();
-      ctx.rect(bbox[0][0], bbox[0][1], bbox[0][2] - bbox[0][0], bbox[0][3] - bbox[0][1]);
-      ctx.stroke();
-      canvas.style.cursor = 'default';
-    });
-
-    const c: any = document.getElementById('imageCanvas');
-    const context = c.getContext('2d');
-
-    context.beginPath();
-    context.rect(188, 50, 200, 100);
-    context.fillStyle = 'yellow';
-    context.fill();
-    context.lineWidth = 7;
-    context.strokeStyle = 'black';
-    context.stroke();
   }
 
   private resetImage() {
