@@ -43,31 +43,38 @@ export class AppComponent implements OnInit {
   }
 
   onChange(event) {
-    const file = event.srcElement.files;
-    const postData = { }; // Put your form data variable. This is only example.
-    this._service.postWithFile('http://127.0.0.1:5000/', postData, file).then(result => {
-      console.log(result);
+    this.buildings = event.srcElement.files;
+    this.imgAmount = Object.keys(this.buildings).length;
+    this.showUploader = false;
+    this.index = 0;
+    this.showBBoxes();
+  }
+
+  showBBoxes() {
+    const postData = {}; // Put your form data variable. This is only example.
+    this._service.postWithFile('http://127.0.0.1:5000/', postData, this.buildings, this.index).then(result => {
       this.detectedBoundingBoxes = result['bboxes'];
-      this.getImages(this.detectedBoundingBoxes);
+      this.processCanvas(this.detectedBoundingBoxes);
     });
   }
 
-  private getImages(detectedBoundingBoxes) {
-    this.buildings = document.getElementById('imageImport')['files'];
-    this.imgAmount = Object.keys(this.buildings).length;
-    this.processCanvas(detectedBoundingBoxes);
-    this.showUploader = false;
-  }
+  // for manually bboxing images
+  // private getImages(detectedBoundingBoxes) {
+  //   this.buildings = document.getElementById('imageImport')['files'];
+  //   this.imgAmount = Object.keys(this.buildings).length;
+  //   this.processCanvas(detectedBoundingBoxes);
+  //   this.showUploader = false;
+  // }
 
   private nextImage() {
-    this.saveToCsv();
+    // this.saveToCsv();
     this.index++;
     if (this.index >= this.imgAmount) {
       this.showUploader = true;
       this.msg = 'All images have been tagged. Upload more!';
       this.index = 0;
     } else {
-      this.processCanvas(this.detectedBoundingBoxes);
+      this.showBBoxes();
     }
   }
 
