@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, Response, Request, RequestMethod, URLSearchParams, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-// declare var $: any;
 import $ from 'jquery';
 
 @Injectable()
@@ -23,9 +22,6 @@ export class HttpClientService {
     Array.from(files).forEach(file => {
       formData.append('image', file, file['name']);
     });
-
-
-    // formData.append('image', files[index], files[index]['name']);
 
     if (postData !== '' && postData !== undefined && postData !== null) {
       for (const property in postData) {

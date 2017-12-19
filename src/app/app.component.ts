@@ -50,7 +50,6 @@ export class AppComponent {
   }
 
   private nextImage() {
-    // this.saveToCsv();
     this.index++;
     if (this.index >= this.imgAmount) {
       this.showUploader = true;
@@ -98,7 +97,6 @@ export class AppComponent {
             ctx.fillStyle = 'red';
             ctx.font = 'bold 12px Arial';
             ctx.fillText(labelMapping[detectedLabels[0][index]], y + 20, x + 20);
-            // this.boundingBoxes.push([labelMapping[detectedLabels[0][index]], x, y, height, width]);
           });
         }
       };
