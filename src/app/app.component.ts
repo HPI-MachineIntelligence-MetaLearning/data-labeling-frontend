@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import $ from 'jquery';
 import { HttpClientService } from './http-client.service';
 import { forEach } from '@angular/router/src/utils/collection';
@@ -8,7 +8,7 @@ import { forEach } from '@angular/router/src/utils/collection';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'Data Labeling';
 
   constructor(private _service: HttpClientService) { }
@@ -29,11 +29,6 @@ export class AppComponent implements OnInit {
   private detectedLabels;
   private allDetectedProps;
   public loading = false;
-
-  ngOnInit() {
-    $('#imageCanvas').mousedown(e => this.handleMouseDown(e));
-    $('#imageCanvas').mouseup(e => this.handleMouseUp(e));
-  }
 
   onChange(event) {
     this.buildings = event.srcElement.files;
@@ -89,20 +84,23 @@ export class AppComponent implements OnInit {
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
-        detectedBoundingBoxes[0].forEach((item, index) => {
-          ctx.beginPath();
-          const x = detectedBoundingBoxes[0][index][0];
-          const y = detectedBoundingBoxes[0][index][1];
-          const height = detectedBoundingBoxes[0][index][2];
-          const width = detectedBoundingBoxes[0][index][3];
-          ctx.rect(x, y, height, width);
-          ctx.lineWidth = 2.5;
-          ctx.strokeStyle = 'red';
-          ctx.stroke();
-          ctx.fillStyle = 'red';
-          ctx.font = 'bold 12px Arial';
-          ctx.fillText(labelMapping[detectedLabels[0][index]], x + 20, y + 20);
-        });
+        if (detectedBoundingBoxes.length !== 0) {
+          detectedBoundingBoxes[0].forEach((item, index) => {
+            ctx.beginPath();
+            const x = detectedBoundingBoxes[0][index][0];
+            const y = detectedBoundingBoxes[0][index][1];
+            const height = detectedBoundingBoxes[0][index][2];
+            const width = detectedBoundingBoxes[0][index][3];
+            ctx.rect(y, x, width, height);
+            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = 'red';
+            ctx.stroke();
+            ctx.fillStyle = 'red';
+            ctx.font = 'bold 12px Arial';
+            ctx.fillText(labelMapping[detectedLabels[0][index]], y + 20, x + 20);
+            // this.boundingBoxes.push([labelMapping[detectedLabels[0][index]], x, y, height, width]);
+          });
+        }
       };
       img.src = e.target['result'];
     };
@@ -129,6 +127,16 @@ export class AppComponent implements OnInit {
 
     link.click();
     this.boundingBoxes = [[]];
+  }
+
+  private saveImage() {
+    console.log('save');
+  }
+
+  private editImage() {
+    this.processCanvas([], []);
+    $('#imageCanvas').mousedown(e => this.handleMouseDown(e));
+    $('#imageCanvas').mouseup(e => this.handleMouseUp(e));
   }
 
   private handleMouseDown(e) {

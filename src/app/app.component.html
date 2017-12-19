@@ -5,6 +5,8 @@
   <div id="next" *ngIf="showUploader == false" class="button-row">
     <button mat-raised-button color="primary" (click)=resetImage()>Reset</button>
     <button mat-raised-button color="primary" (click)=nextImage()>Next</button>
+    <button mat-raised-button color="primary" (click)=saveImage()>Save</button>
+    <button mat-raised-button color="primary" (click)=editImage()>Edit</button>
   </div>
 
   <div *ngIf="showUploader" id="msg">{{msg}}</div>
