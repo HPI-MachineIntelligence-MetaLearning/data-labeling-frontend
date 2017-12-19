@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import $ from 'jquery';
 import { HttpClientService } from './http-client.service';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-root',
@@ -25,17 +26,7 @@ export class AppComponent implements OnInit {
   private imgName = '';
   private imgData;
   private detectedBoundingBoxes;
-
-  private labelMapping = {
-    0: 'other',
-    1: 'berlinerdom',
-    2: 'fernsehturm',
-    3: 'funkturm',
-    4: 'reichstag',
-    5: 'rotesrathaus',
-    6: 'siegessaeule',
-    7: 'none'
-  };
+  private detectedLabels;
 
   ngOnInit() {
     $('#imageCanvas').mousedown(e => this.handleMouseDown(e));
@@ -53,18 +44,12 @@ export class AppComponent implements OnInit {
   showBBoxes() {
     const postData = {}; // Put your form data variable. This is only example.
     this._service.postWithFile('http://127.0.0.1:5000/', postData, this.buildings, this.index).then(result => {
+      console.log(result);
       this.detectedBoundingBoxes = result['bboxes'];
-      this.processCanvas(this.detectedBoundingBoxes);
+      this.detectedLabels = result['labels'];
+      this.processCanvas(this.detectedBoundingBoxes, this.detectedLabels);
     });
   }
-
-  // for manually bboxing images
-  // private getImages(detectedBoundingBoxes) {
-  //   this.buildings = document.getElementById('imageImport')['files'];
-  //   this.imgAmount = Object.keys(this.buildings).length;
-  //   this.processCanvas(detectedBoundingBoxes);
-  //   this.showUploader = false;
-  // }
 
   private nextImage() {
     // this.saveToCsv();
@@ -78,26 +63,41 @@ export class AppComponent implements OnInit {
     }
   }
 
-  private processCanvas(detectedBoundingBoxes) {
+  private processCanvas(detectedBoundingBoxes, detectedLabels) {
     const reader = new FileReader();
-
     reader.onload = function (e) {
       const canvas: any = document.getElementById('imageCanvas');
       const ctx = canvas.getContext('2d');
       const img: any = new Image();
+      const labelMapping = {
+        0: 'other',
+        1: 'berlinerdom',
+        2: 'brandenburgertor',
+        3: 'fernsehturm',
+        4: 'funkturm',
+        5: 'reichstag',
+        6: 'rotesrathaus',
+        7: 'siegessaeule',
+        8: 'none'
+      };
       img.onload = function () {
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
-        ctx.beginPath();
-        const x = detectedBoundingBoxes[0][0][0];
-        const y = detectedBoundingBoxes[0][0][1];
-        const height = detectedBoundingBoxes[0][0][2];
-        const width = detectedBoundingBoxes[0][0][3];
-        ctx.rect(x, y, height, width);
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = 'red';
-        ctx.stroke();
+        detectedBoundingBoxes[0].forEach((item, index) => {
+          ctx.beginPath();
+          const x = detectedBoundingBoxes[0][index][0];
+          const y = detectedBoundingBoxes[0][index][1];
+          const height = detectedBoundingBoxes[0][index][2];
+          const width = detectedBoundingBoxes[0][index][3];
+          ctx.rect(x, y, height, width);
+          ctx.lineWidth = 2.5;
+          ctx.strokeStyle = 'red';
+          ctx.stroke();
+          ctx.fillStyle = 'red';
+          ctx.font = 'bold 12px Arial';
+          ctx.fillText(labelMapping[detectedLabels[0][index]], x + 20, y + 20);
+        });
       };
       img.src = e.target['result'];
     };
@@ -106,7 +106,7 @@ export class AppComponent implements OnInit {
   }
 
   private resetImage() {
-    this.processCanvas(this.detectedBoundingBoxes);
+    this.processCanvas(this.detectedBoundingBoxes, this.detectedLabels);
   }
 
   private saveToCsv() {
@@ -151,7 +151,7 @@ export class AppComponent implements OnInit {
   private drawBoundingBox(ctx, canvas, startX, startY, endX, endY) {
     ctx.strokeStyle = '#F00';
     ctx.beginPath();
-    ctx.rect(startX, startY, endX - startX, endY - startY);
+    ctx.rect(startX, startY, endX, endY);
     this.boundingBoxes.push([this.startX, this.startY, endX, endY]);
     ctx.stroke();
     canvas.style.cursor = 'default';
