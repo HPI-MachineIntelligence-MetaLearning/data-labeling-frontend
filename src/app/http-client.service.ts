@@ -15,12 +15,17 @@ export class HttpClientService {
     this.http = http;
   }
 
-  postWithFile(url: string, postData: any, files: File[], index: number) {
+  postWithFile(url: string, postData: any, files: File[]) {
 
     const headers = new Headers();
     const formData: FormData = new FormData();
 
-    formData.append('image', files[index], files[index]['name']);
+    Array.from(files).forEach(file => {
+      formData.append('image', file, file['name']);
+    });
+
+
+    // formData.append('image', files[index], files[index]['name']);
 
     if (postData !== '' && postData !== undefined && postData !== null) {
       for (const property in postData) {

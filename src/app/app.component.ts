@@ -27,6 +27,7 @@ export class AppComponent implements OnInit {
   private imgData;
   private detectedBoundingBoxes;
   private detectedLabels;
+  private allDetectedProps;
 
   ngOnInit() {
     $('#imageCanvas').mousedown(e => this.handleMouseDown(e));
@@ -43,9 +44,10 @@ export class AppComponent implements OnInit {
 
   showBBoxes() {
     const postData = {}; // Put your form data variable. This is only example.
-    this._service.postWithFile('http://127.0.0.1:5000/', postData, this.buildings, this.index).then(result => {
-      this.detectedBoundingBoxes = result['bboxes'];
-      this.detectedLabels = result['labels'];
+    this._service.postWithFile('http://127.0.0.1:5000/', postData, this.buildings).then(result => {
+      this.allDetectedProps = result;
+      this.detectedBoundingBoxes = this.allDetectedProps[this.index]['bboxes'];
+      this.detectedLabels = this.allDetectedProps[this.index]['labels'];
       this.processCanvas(this.detectedBoundingBoxes, this.detectedLabels);
     });
   }
@@ -58,7 +60,9 @@ export class AppComponent implements OnInit {
       this.msg = 'All images have been tagged. Upload more!';
       this.index = 0;
     } else {
-      this.showBBoxes();
+      this.detectedBoundingBoxes = this.allDetectedProps[this.index]['bboxes'];
+      this.detectedLabels = this.allDetectedProps[this.index]['labels'];
+      this.processCanvas(this.detectedBoundingBoxes, this.detectedLabels);
     }
   }
 
