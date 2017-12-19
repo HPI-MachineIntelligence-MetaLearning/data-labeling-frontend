@@ -7,6 +7,7 @@ import { HttpClientService } from './http-client.service';
 import { RouterModule, Routes, ActivatedRoute } from '@angular/router';
 
 import { HttpModule } from '@angular/http';
+import { LoadingModule } from 'ngx-loading';
 
 
 import { AppComponent } from './app.component';
@@ -22,6 +23,7 @@ import { AppComponent } from './app.component';
     MatCheckboxModule,
     NoopAnimationsModule,
     HttpModule,
+    LoadingModule
   ],
   providers: [HttpClientService],
   bootstrap: [AppComponent]

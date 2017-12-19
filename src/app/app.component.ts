@@ -28,6 +28,7 @@ export class AppComponent implements OnInit {
   private detectedBoundingBoxes;
   private detectedLabels;
   private allDetectedProps;
+  public loading = false;
 
   ngOnInit() {
     $('#imageCanvas').mousedown(e => this.handleMouseDown(e));
@@ -43,7 +44,8 @@ export class AppComponent implements OnInit {
   }
 
   showBBoxes() {
-    const postData = {}; // Put your form data variable. This is only example.
+    const postData = {};
+    this.loading = true;
     this._service.postWithFile('http://127.0.0.1:5000/', postData, this.buildings).then(result => {
       this.allDetectedProps = result;
       this.detectedBoundingBoxes = this.allDetectedProps[this.index]['bboxes'];
@@ -104,6 +106,7 @@ export class AppComponent implements OnInit {
       };
       img.src = e.target['result'];
     };
+    this.loading = false;
     this.imgName = this.buildings[this.index]['name'];
     reader.readAsDataURL(this.buildings[this.index]);
   }

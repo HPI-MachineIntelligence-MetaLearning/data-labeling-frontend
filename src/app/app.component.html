@@ -11,6 +11,8 @@
 
   <input matInput id="imageImport" type="file" multiple="multiple" (change)=onChange($event) *ngIf="showUploader"/>
 
-  <canvas [hidden]="showUploader" id="imageCanvas"> </canvas>
+  <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+
+  <canvas *ngIf="!showUploader && !loading" id="imageCanvas"> </canvas>
 
 </div>
