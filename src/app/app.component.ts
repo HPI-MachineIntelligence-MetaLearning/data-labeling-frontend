@@ -44,7 +44,6 @@ export class AppComponent implements OnInit {
   showBBoxes() {
     const postData = {}; // Put your form data variable. This is only example.
     this._service.postWithFile('http://127.0.0.1:5000/', postData, this.buildings, this.index).then(result => {
-      console.log(result);
       this.detectedBoundingBoxes = result['bboxes'];
       this.detectedLabels = result['labels'];
       this.processCanvas(this.detectedBoundingBoxes, this.detectedLabels);
