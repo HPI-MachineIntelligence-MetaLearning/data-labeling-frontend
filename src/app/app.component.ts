@@ -157,7 +157,7 @@ export class AppComponent {
     const offsetY = canvasOffset.top;
     const endX = Math.floor(e.clientX - offsetX);
     const endY = Math.floor(e.clientY - offsetY);
-    this.drawBoundingBox(ctx, canvas, this.startX, this.startY, endX, endY);
+    this.drawBoundingBox(ctx, canvas, this.startX, this.startY, endX - this.startX, endY - this.startY);
   }
 
   private drawBoundingBox(ctx, canvas, startX, startY, endX, endY) {
