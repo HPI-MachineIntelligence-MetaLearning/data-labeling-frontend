@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import $ from 'jquery';
 import { HttpClientService } from './http-client.service';
 import { forEach } from '@angular/router/src/utils/collection';
@@ -22,13 +22,32 @@ export class AppComponent {
   private index = 0;
   private imgAmount;
   private msg;
-  private boundingBoxes = [[]];
+  private boundingBoxes = [];
   private imgName = '';
   private imgData;
   private detectedBoundingBoxes;
   private detectedLabels;
   private allDetectedProps;
   public loading = false;
+  private edit = false;
+  public bbCount = 0;
+
+  labels = [
+    { id: 0, value: 'other' },
+    { id: 1, value: 'berlinerdom' },
+    { id: 2, value: 'brandenburgertor' },
+    { id: 3, value: 'fernsehturm' },
+    { id: 4, value: 'funkturm' },
+    { id: 5, value: 'reichstag' },
+    { id: 6, value: 'rotesrathaus' },
+    { id: 7, value: 'siegessaeule' },
+    { id: 8, value: 'none' }
+  ];
+  foods = [
+    { value: 'steak-0', viewValue: 'Steak' },
+    { value: 'pizza-1', viewValue: 'Pizza' },
+    { value: 'tacos-2', viewValue: 'Tacos' }
+  ];
 
   onChange(event) {
     this.buildings = event.srcElement.files;
@@ -53,7 +72,7 @@ export class AppComponent {
     this.index++;
     if (this.index >= this.imgAmount) {
       this.showUploader = true;
-      this.msg = 'All images have been tagged. Upload more!';
+      this.msg = 'You are done. Upload more!';
       this.index = 0;
     } else {
       this.detectedBoundingBoxes = this.allDetectedProps[this.index]['bboxes'];
@@ -124,14 +143,17 @@ export class AppComponent {
     document.body.appendChild(link);
 
     link.click();
-    this.boundingBoxes = [[]];
+    this.boundingBoxes = [];
   }
 
   private saveImage() {
+    this.edit = false;
+    console.log(this.boundingBoxes);
     console.log('save');
   }
 
   private editImage() {
+    this.edit = true;
     this.processCanvas([], []);
     $('#imageCanvas').mousedown(e => this.handleMouseDown(e));
     $('#imageCanvas').mouseup(e => this.handleMouseUp(e));
@@ -167,6 +189,25 @@ export class AppComponent {
     this.boundingBoxes.push([this.startX, this.startY, endX, endY]);
     ctx.stroke();
     canvas.style.cursor = 'default';
+    this.bbCount++;
+    this.createDropDown();
+  }
+
+  private createDropDown() {
+    // $('.labelDropdown')[0].clone().appendTo('.dropdown-container');
+    // console.log($('.dropdown-container'));
+    // const itm = document.getElementsByClassName('labelDropdown')[0];
+    const parent = document.getElementById('dropdown-container');
+    const formField = document.createElement('mat-form-field');
+    const selectField = document.createElement('mat-select');
+    const optionField = document.createElement('mat-option');
+    optionField.setAttribute('*ngFor', 'let label of labels');
+    optionField.setAttribute('[value]', 'label.id');
+    optionField.innerHTML = 'test';
+    selectField.appendChild(optionField);
+    formField.appendChild(selectField);
+    parent.appendChild(formField);
+
   }
 
 }

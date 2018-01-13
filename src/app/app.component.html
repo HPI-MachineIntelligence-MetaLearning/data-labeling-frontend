@@ -1,12 +1,11 @@
 <div style="text-align:center">
   <h3>
-    Welcome to Data labeling!
+    Semi-Automated Labeling
   </h3>
   <div id="next" *ngIf="showUploader == false" class="button-row">
-    <button mat-raised-button color="primary" (click)=resetImage()>Reset</button>
     <button mat-raised-button color="primary" (click)=nextImage()>Next</button>
-    <button mat-raised-button color="primary" (click)=saveImage()>Save</button>
-    <button mat-raised-button color="primary" (click)=editImage()>Edit</button>
+    <button *ngIf="edit" mat-raised-button color="primary" (click)=saveImage()>Save</button>
+    <button *ngIf="!edit" mat-raised-button color="primary" (click)=editImage()>Edit</button>
   </div>
 
   <div *ngIf="showUploader" id="msg">{{msg}}</div>
@@ -14,6 +13,16 @@
   <input matInput id="imageImport" type="file" multiple="multiple" (change)=onChange($event) *ngIf="showUploader"/>
 
   <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
+
+  <div style="width: 100%" id="dropdown-container">
+      <mat-form-field *ngIf="edit">
+        <mat-select placeholder="Bounding Box Label" class="labelDropdown">
+          <mat-option *ngFor="let label of labels" [value]="label.id">
+            {{ label.value }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+  </div>
 
   <canvas *ngIf="!showUploader && !loading" id="imageCanvas"> </canvas>
 
