@@ -194,20 +194,10 @@ export class AppComponent {
   }
 
   private createDropDown() {
-    // $('.labelDropdown')[0].clone().appendTo('.dropdown-container');
-    // console.log($('.dropdown-container'));
-    // const itm = document.getElementsByClassName('labelDropdown')[0];
+    const itm = document.getElementsByClassName('labelDropdown')[0];
+    const clone = itm.cloneNode(true);
     const parent = document.getElementById('dropdown-container');
-    const formField = document.createElement('mat-form-field');
-    const selectField = document.createElement('mat-select');
-    const optionField = document.createElement('mat-option');
-    optionField.setAttribute('*ngFor', 'let label of labels');
-    optionField.setAttribute('[value]', 'label.id');
-    optionField.innerHTML = 'test';
-    selectField.appendChild(optionField);
-    formField.appendChild(selectField);
-    parent.appendChild(formField);
-
+    parent.appendChild(clone);
   }
 
 }
