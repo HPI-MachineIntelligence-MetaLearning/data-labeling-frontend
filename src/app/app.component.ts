@@ -100,17 +100,17 @@ export class AppComponent {
         if (detectedBoundingBoxes.length !== 0) {
           detectedBoundingBoxes[0].forEach((item, index) => {
             ctx.beginPath();
-            const x = detectedBoundingBoxes[0][index][0];
-            const y = detectedBoundingBoxes[0][index][1];
+            const y = detectedBoundingBoxes[0][index][0];
+            const x = detectedBoundingBoxes[0][index][1];
             const height = detectedBoundingBoxes[0][index][2];
             const width = detectedBoundingBoxes[0][index][3];
-            ctx.rect(y, x, width, height);
+            ctx.rect(x, y, width, height);
             ctx.lineWidth = 2.5;
             ctx.strokeStyle = 'red';
             ctx.stroke();
             ctx.fillStyle = 'red';
             ctx.font = 'bold 12px Arial';
-            ctx.fillText(labelMapping[detectedLabels[0][index]], y + 20, x + 20);
+            ctx.fillText(labelMapping[detectedLabels[0][index]], x + 20, y + 20);
           });
         }
       };
