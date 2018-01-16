@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, ComponentFactoryResolver } from '@angular/core';
 import $ from 'jquery';
 import { HttpClientService } from './http-client.service';
 import { forEach } from '@angular/router/src/utils/collection';
@@ -11,7 +11,7 @@ import { forEach } from '@angular/router/src/utils/collection';
 export class AppComponent {
   title = 'Data Labeling';
 
-  constructor(private _service: HttpClientService) { }
+  constructor(private _service: HttpClientService, private resolver: ComponentFactoryResolver) { }
 
   private buildings = [ ];
   private showUploader = true;
@@ -189,26 +189,25 @@ export class AppComponent {
   }
 
   private createDropDown() {
-    // const itm = document.getElementsByClassName('labelDropdown')[0];
-    // const clone = itm.cloneNode(true);
     const parent = document.getElementById('dropdown-container');
     const sel: any = document.createElement('select');
-    sel.setAttribute('id', 'bbCount' + this.bbCount);
+    sel.setAttribute('id', 'bbCount#' + this.bbCount);
     sel.setAttribute('class', 'labelDropdown');
-    $('labelDropdown').on('change', e => this.onDropdownChange(e));
     for (let i = 0; i < 8; i++) {
       const opt: any = document.createElement('option');
       opt.setAttribute('text', this.labels[i].value);
       opt.setAttribute('value', String(this.labels[i].id));
       opt.innerText = this.labels[i].value;
-      // opt.setAttribute('onClick', this.onDropdownChange());
       sel.appendChild(opt);
     }
     parent.appendChild(sel);
+    document.getElementById('bbCount#' + this.bbCount).addEventListener('change', e => this.onDropdownChange(e));
   }
 
   public onDropdownChange(e) {
-    console.log('test');
+    const id = e.target.id;
+    const elem: any = document.getElementById(id);
+    const label = elem.value;
   }
 
 }
