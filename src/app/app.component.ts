@@ -43,11 +43,6 @@ export class AppComponent {
     { id: 7, value: 'siegessaeule' },
     { id: 8, value: 'none' }
   ];
-  foods = [
-    { value: 'steak-0', viewValue: 'Steak' },
-    { value: 'pizza-1', viewValue: 'Pizza' },
-    { value: 'tacos-2', viewValue: 'Tacos' }
-  ];
 
   onChange(event) {
     this.buildings = event.srcElement.files;
@@ -194,10 +189,26 @@ export class AppComponent {
   }
 
   private createDropDown() {
-    const itm = document.getElementsByClassName('labelDropdown')[0];
-    const clone = itm.cloneNode(true);
+    // const itm = document.getElementsByClassName('labelDropdown')[0];
+    // const clone = itm.cloneNode(true);
     const parent = document.getElementById('dropdown-container');
-    parent.appendChild(clone);
+    const sel: any = document.createElement('select');
+    sel.setAttribute('id', 'bbCount' + this.bbCount);
+    sel.setAttribute('class', 'labelDropdown');
+    $('labelDropdown').on('change', e => this.onDropdownChange(e));
+    for (let i = 0; i < 8; i++) {
+      const opt: any = document.createElement('option');
+      opt.setAttribute('text', this.labels[i].value);
+      opt.setAttribute('value', String(this.labels[i].id));
+      opt.innerText = this.labels[i].value;
+      // opt.setAttribute('onClick', this.onDropdownChange());
+      sel.appendChild(opt);
+    }
+    parent.appendChild(sel);
+  }
+
+  public onDropdownChange(e) {
+    console.log('test');
   }
 
 }

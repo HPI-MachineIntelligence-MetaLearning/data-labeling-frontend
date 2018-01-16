@@ -31,3 +31,8 @@ body {
   float: right;
 }
 
+.labelDropdown {
+    margin-right: 2.5%;
+    margin-left: 2.5%;
+    margin-bottom: 20px;
+}

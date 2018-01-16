@@ -15,37 +15,6 @@
   <ngx-loading [show]="loading" [config]="{ backdropBorderRadius: '14px' }"></ngx-loading>
 
   <div style="width: 100%" id="dropdown-container">
-      <mat-form-field *ngIf="edit" class="labelDropdown">
-        <mat-select placeholder="Bounding Box Label">
-          <mat-option [value]="0">
-             other
-          </mat-option>
-          <mat-option [value]="1">
-             berlinerdom
-          </mat-option>
-          <mat-option [value]="2">
-             brandenburgertor
-          </mat-option>
-          <mat-option [value]="3">
-             fernsehturm
-          </mat-option>
-          <mat-option [value]="4">
-             funkturm
-          </mat-option>
-          <mat-option [value]="5">
-             reichstag
-          </mat-option>
-          <mat-option [value]="6">
-             rotesrathaus
-          </mat-option>
-          <mat-option [value]="7">
-             siegessaeule
-          </mat-option>
-          <mat-option [value]="8">
-            none
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
   </div>
 
   <canvas *ngIf="!showUploader && !loading" id="imageCanvas"> </canvas>
