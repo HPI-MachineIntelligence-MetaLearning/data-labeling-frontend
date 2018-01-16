@@ -144,7 +144,15 @@ export class AppComponent {
   private saveImage() {
     this.edit = false;
     console.log(this.boundingBoxes);
-    console.log('save');
+    const parent = document.getElementById('dropdown-container');
+    while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+    }
+    this.bbCount = -1;
+    this.boundingBoxes = [];
+    $('#imageCanvas').unbind('mouseup');
+    $('#imageCanvas').unbind('mousedown');
+    this.nextImage();
   }
 
   private editImage() {
@@ -181,7 +189,7 @@ export class AppComponent {
     ctx.strokeStyle = '#F00';
     ctx.beginPath();
     ctx.rect(startX, startY, endX, endY);
-    this.boundingBoxes.push([this.startX, this.startY, endX, endY]);
+    this.boundingBoxes.push([this.startX, this.startY, endX, endY, 'other']);
     ctx.stroke();
     canvas.style.cursor = 'default';
     this.bbCount++;
