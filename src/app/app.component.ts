@@ -30,7 +30,7 @@ export class AppComponent {
   private allDetectedProps;
   public loading = false;
   private edit = false;
-  public bbCount = 0;
+  public bbCount = -1;
 
   labels = [
     { id: 0, value: 'other' },
@@ -196,7 +196,7 @@ export class AppComponent {
     for (let i = 0; i < 8; i++) {
       const opt: any = document.createElement('option');
       opt.setAttribute('text', this.labels[i].value);
-      opt.setAttribute('value', String(this.labels[i].id));
+      opt.setAttribute('value', String(this.labels[i].value));
       opt.innerText = this.labels[i].value;
       sel.appendChild(opt);
     }
@@ -208,6 +208,11 @@ export class AppComponent {
     const id = e.target.id;
     const elem: any = document.getElementById(id);
     const label = elem.value;
+    const count = id.split('#');
+    if (this.boundingBoxes[count[1]].length > 4) {
+      this.boundingBoxes[count[1]].splice(-1, 1);
+    }
+    this.boundingBoxes[count[1]].push(label);
   }
 
 }
