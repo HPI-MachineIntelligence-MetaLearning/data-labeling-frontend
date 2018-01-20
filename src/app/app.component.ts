@@ -3,6 +3,8 @@ import $ from 'jquery';
 import { HttpClientService } from './http-client.service';
 import { forEach } from '@angular/router/src/utils/collection';
 
+import { Http, Headers, Response, Request, RequestMethod, URLSearchParams, RequestOptions } from '@angular/http';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -11,7 +13,11 @@ import { forEach } from '@angular/router/src/utils/collection';
 export class AppComponent {
   title = 'Data Labeling';
 
-  constructor(private _service: HttpClientService, private resolver: ComponentFactoryResolver) { }
+  constructor(private _service: HttpClientService, private resolver: ComponentFactoryResolver, private http: Http) {
+    this.http = http;
+   }
+
+  // TODO: Save alle Bounding Boxes in Json
 
   private buildings = [ ];
   private showUploader = true;
@@ -44,6 +50,18 @@ export class AppComponent {
     { id: 8, value: 'none' }
   ];
 
+  labelMapping = {
+    0: 'other',
+    1: 'berlinerdom',
+    2: 'brandenburgertor',
+    3: 'fernsehturm',
+    4: 'funkturm',
+    5: 'reichstag',
+    6: 'rotesrathaus',
+    7: 'siegessaeule',
+    8: 'none'
+  };
+
   onChange(event) {
     this.buildings = event.srcElement.files;
     this.imgAmount = Object.keys(this.buildings).length;
@@ -60,6 +78,14 @@ export class AppComponent {
       this.detectedBoundingBoxes = this.allDetectedProps[this.index]['bboxes'];
       this.detectedLabels = this.allDetectedProps[this.index]['labels'];
       this.processCanvas(this.detectedBoundingBoxes, this.detectedLabels);
+      this.buildBoudingBoxArray();
+    });
+  }
+
+  buildBoudingBoxArray() {
+    this.boundingBoxes = [];
+    this.detectedBoundingBoxes[0].forEach((box, index) => {
+      this.boundingBoxes.push([box[0], box[1], box[2], box[3], this.labelMapping[this.detectedLabels[0][index]]]);
     });
   }
 
@@ -126,8 +152,8 @@ export class AppComponent {
   }
 
   private saveToCsv() {
-    let csvContent = 'data:text/csv;charset=utf-8,';
-    this.boundingBoxes.forEach(function (rowArray) {
+    let csvContent = 'data:application/json;charset=UTF-8';
+    this.boundingBoxes.forEach((rowArray) => {
       const row = rowArray.join(';');
       csvContent += row + '\r\n';
     });
@@ -142,20 +168,40 @@ export class AppComponent {
   }
 
   private saveImage() {
+    const jsonData = this.buildJson();
     this.edit = false;
-    console.log(this.boundingBoxes);
     const parent = document.getElementById('dropdown-container');
     while (parent.firstChild) {
       parent.removeChild(parent.firstChild);
     }
-    this.bbCount = -1;
-    this.boundingBoxes = [];
-    $('#imageCanvas').unbind('mouseup');
-    $('#imageCanvas').unbind('mousedown');
-    this.nextImage();
+    return new Promise((resolve, reject) => {
+      this.http.post('http://localhost:3000/json', [this.imgName, jsonData], {
+        headers: new Headers(),
+      }).subscribe(
+        res => {
+          this.bbCount = -1;
+          this.boundingBoxes = [];
+          $('#imageCanvas').unbind('mouseup');
+          $('#imageCanvas').unbind('mousedown');
+          this.nextImage();
+        },
+        error => {
+          reject(error);
+        }
+        );
+    });
   }
 
   private editImage() {
+    this.boundingBoxes = [];
+    this.bbCount = -1;
+    this.boundingBoxes = [];
+    const parent = document.getElementById('dropdown-container');
+    while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+    }
+    $('#imageCanvas').unbind('mouseup');
+    $('#imageCanvas').unbind('mousedown');
     this.edit = true;
     this.processCanvas([], []);
     $('#imageCanvas').mousedown(e => this.handleMouseDown(e));
@@ -198,6 +244,8 @@ export class AppComponent {
 
   private createDropDown() {
     const parent = document.getElementById('dropdown-container');
+    const title: any = document.createElement('label');
+    title.innerHTML = 'Bounding Box ' + this.bbCount;
     const sel: any = document.createElement('select');
     sel.setAttribute('id', 'bbCount#' + this.bbCount);
     sel.setAttribute('class', 'labelDropdown');
@@ -208,6 +256,7 @@ export class AppComponent {
       opt.innerText = this.labels[i].value;
       sel.appendChild(opt);
     }
+    parent.appendChild(title);
     parent.appendChild(sel);
     document.getElementById('bbCount#' + this.bbCount).addEventListener('change', e => this.onDropdownChange(e));
   }
@@ -223,4 +272,19 @@ export class AppComponent {
     this.boundingBoxes[count[1]].push(label);
   }
 
+  public buildJson() {
+    const bbJson = [];
+    this.boundingBoxes.forEach((box) => {
+      bbJson.push({
+        'name': box[4],
+        'bndbox': {
+          'xmin': box[0],
+          'xmax': box[1],
+          'ymin': box[2],
+          'ymax': box[3]
+        }
+      });
+    });
+    return bbJson;
+  }
 }

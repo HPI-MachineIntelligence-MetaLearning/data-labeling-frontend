@@ -1,10 +1,11 @@
 <div style="text-align:center">
   <h3>
-    Semi-Automated Labeling
+    Semi-Autonomous Labeling
   </h3>
   <div id="next" *ngIf="showUploader == false" class="button-row">
-    <button mat-raised-button color="primary" (click)=nextImage()>Next</button>
+    <button *ngIf="!edit" mat-raised-button color="primary" (click)=saveImage()>Next</button>
     <button *ngIf="edit" mat-raised-button color="primary" (click)=saveImage()>Save</button>
+    <button *ngIf="edit" mat-raised-button color="primary" (click)=editImage()>Reset</button>
     <button *ngIf="!edit" mat-raised-button color="primary" (click)=editImage()>Edit</button>
   </div>
 
