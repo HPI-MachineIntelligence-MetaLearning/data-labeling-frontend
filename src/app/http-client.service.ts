@@ -35,8 +35,8 @@ export class HttpClientService {
         headers: headers
       }).subscribe(
         res => {
-          this.responseData = res.json();
-          resolve(this.responseData);
+          // this.responseData = res.json();
+          resolve(res);
         },
         error => {
           reject(error);

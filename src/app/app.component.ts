@@ -38,7 +38,7 @@ export class AppComponent {
   private edit = false;
   public bbCount = -1;
 
-  labels = [
+  private labels = [
     { id: 0, value: 'other' },
     { id: 1, value: 'berlinerdom' },
     { id: 2, value: 'brandenburgertor' },
@@ -50,7 +50,7 @@ export class AppComponent {
     { id: 8, value: 'none' }
   ];
 
-  labelMapping = {
+  private labelMapping = {
     0: 'other',
     1: 'berlinerdom',
     2: 'brandenburgertor',
@@ -67,19 +67,45 @@ export class AppComponent {
     this.imgAmount = Object.keys(this.buildings).length;
     this.showUploader = false;
     this.index = 0;
-    this.showBBoxes();
+    this.initBBoxes();
   }
 
-  showBBoxes() {
+  initBBoxes() {
     const postData = {};
     this.loading = true;
     this._service.postWithFile('http://127.0.0.1:5000/', postData, this.buildings).then(result => {
-      this.allDetectedProps = result;
-      this.detectedBoundingBoxes = this.allDetectedProps[this.index]['bboxes'];
-      this.detectedLabels = this.allDetectedProps[this.index]['labels'];
-      this.processCanvas(this.detectedBoundingBoxes, this.detectedLabels);
-      this.buildBoudingBoxArray();
+    this.getBboxes();
     });
+  }
+
+  getBboxes() {
+    return new Promise((resolve, reject) => {
+      this.http.get('http://127.0.0.1:5000/', {
+        headers: new Headers(),
+      }).subscribe(
+        res => {
+          if (res['_body'] === 'No items in queue.') {
+            setTimeout(() => {
+              this.getBboxes();
+            }, 1000);
+          } else {
+            this.loadBboxes(res.json());
+            resolve(res.json());
+          }
+        },
+        error => {
+          reject(error);
+        }
+        );
+    });
+  }
+
+  loadBboxes(boxes) {
+    this.allDetectedProps = boxes;
+    this.detectedBoundingBoxes = this.allDetectedProps['bboxes'];
+    this.detectedLabels = this.allDetectedProps['labels'];
+    this.processCanvas(this.detectedBoundingBoxes, this.detectedLabels);
+    this.buildBoudingBoxArray();
   }
 
   buildBoudingBoxArray() {
@@ -96,30 +122,17 @@ export class AppComponent {
       this.msg = 'You are done. Upload more!';
       this.index = 0;
     } else {
-      this.detectedBoundingBoxes = this.allDetectedProps[this.index]['bboxes'];
-      this.detectedLabels = this.allDetectedProps[this.index]['labels'];
-      this.processCanvas(this.detectedBoundingBoxes, this.detectedLabels);
+      this.getBboxes();
     }
   }
 
   private processCanvas(detectedBoundingBoxes, detectedLabels) {
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = (e) => {
       const canvas: any = document.getElementById('imageCanvas');
       const ctx = canvas.getContext('2d');
       const img: any = new Image();
-      const labelMapping = {
-        0: 'other',
-        1: 'berlinerdom',
-        2: 'brandenburgertor',
-        3: 'fernsehturm',
-        4: 'funkturm',
-        5: 'reichstag',
-        6: 'rotesrathaus',
-        7: 'siegessaeule',
-        8: 'none'
-      };
-      img.onload = function () {
+      img.onload = () => {
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.drawImage(img, 0, 0);
@@ -136,7 +149,7 @@ export class AppComponent {
             ctx.stroke();
             ctx.fillStyle = 'red';
             ctx.font = 'bold 12px Arial';
-            ctx.fillText(labelMapping[detectedLabels[0][index]], x + 20, y + 20);
+            ctx.fillText(this.labelMapping[detectedLabels[0][index]], x + 20, y + 20);
           });
         }
       };
@@ -149,22 +162,6 @@ export class AppComponent {
 
   private resetImage() {
     this.processCanvas(this.detectedBoundingBoxes, this.detectedLabels);
-  }
-
-  private saveToCsv() {
-    let csvContent = 'data:application/json;charset=UTF-8';
-    this.boundingBoxes.forEach((rowArray) => {
-      const row = rowArray.join(';');
-      csvContent += row + '\r\n';
-    });
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', this.imgName + '.csv');
-    document.body.appendChild(link);
-
-    link.click();
-    this.boundingBoxes = [];
   }
 
   private saveImage() {
