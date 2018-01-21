@@ -171,11 +171,17 @@ export class AppComponent {
     while (parent.firstChild) {
       parent.removeChild(parent.firstChild);
     }
+    console.log(jsonData);
+    const data = {
+      'annotation': jsonData,
+      'name': this.imgName
+    };
     return new Promise((resolve, reject) => {
-      this.http.post('http://localhost:3000/json', [this.imgName, jsonData], {
+      this.http.post('http://127.0.0.1:5000/save_output', data, {
         headers: new Headers(),
       }).subscribe(
         res => {
+          console.log(res, 'res');
           this.bbCount = -1;
           this.boundingBoxes = [];
           $('#imageCanvas').unbind('mouseup');
