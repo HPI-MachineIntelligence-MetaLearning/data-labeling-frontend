@@ -15,9 +15,7 @@ export class AppComponent {
 
   constructor(private _service: HttpClientService, private resolver: ComponentFactoryResolver, private http: Http) {
     this.http = http;
-   }
-
-  // TODO: Save alle Bounding Boxes in Json
+  }
 
   private buildings = [ ];
   private showUploader = true;
