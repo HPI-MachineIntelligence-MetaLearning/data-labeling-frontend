@@ -1,9 +1,9 @@
 # DataLabeling
 
 
-## Requierements
+## Requirements
 
-Node v.8.x.x (https://nodejs.org/en/download/)
+Node v.8.x.x (npm 5.6.0) (https://nodejs.org/en/download/)
 Angular-CLI: `npm install -g @angular/cli`.
 
 ## Installation
