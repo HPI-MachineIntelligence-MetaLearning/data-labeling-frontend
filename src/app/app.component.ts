@@ -252,7 +252,7 @@ export class AppComponent {
     const sel: any = document.createElement('select');
     sel.setAttribute('id', 'bbCount#' + this.bbCount);
     sel.setAttribute('class', 'labelDropdown');
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < this.labels.length - 1; i++) {
       const opt: any = document.createElement('option');
       opt.setAttribute('text', this.labels[i].value);
       opt.setAttribute('value', String(this.labels[i].value));
