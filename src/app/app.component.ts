@@ -127,7 +127,6 @@ export class AppComponent {
 
   buildBoudingBoxArray() {
     this.boundingBoxes = [];
-    console.log(this.detectedBoundingBoxes);
     this.detectedBoundingBoxes[0].forEach((box, index) => {
       this.boundingBoxes.push([box[0], box[1], box[2], box[3], this.labelMapping[this.detectedLabels[0][index]]]);
     });
