@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, ComponentFactoryResolver } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import $ from 'jquery';
 import { HttpClientService } from './http-client.service';
 import { forEach } from '@angular/router/src/utils/collection';
@@ -13,7 +13,7 @@ import { Http, Headers, Response, Request, RequestMethod, URLSearchParams, Reque
 export class AppComponent {
   title = 'Data Labeling';
 
-  constructor(private _service: HttpClientService, private resolver: ComponentFactoryResolver, private http: Http) {
+  constructor(private _service: HttpClientService, private http: Http) {
     this.http = http;
   }
 
@@ -69,7 +69,22 @@ export class AppComponent {
     this.imgAmount = Object.keys(this.buildings).length;
     this.showUploader = false;
     this.index = 0;
-    this.initBBoxes();
+    this.resetBBQueue();
+  }
+
+  resetBBQueue() {
+    return new Promise((resolve, reject) => {
+      this.http.post('http://127.0.0.1:5000/reset', {
+        headers: this.headers,
+      }).subscribe(
+        res => {
+          this.initBBoxes();
+        },
+        error => {
+          reject(error);
+        }
+      );
+    });
   }
 
   initBBoxes() {
@@ -98,7 +113,7 @@ export class AppComponent {
         error => {
           reject(error);
         }
-        );
+      );
     });
   }
 
@@ -112,6 +127,7 @@ export class AppComponent {
 
   buildBoudingBoxArray() {
     this.boundingBoxes = [];
+    console.log(this.detectedBoundingBoxes);
     this.detectedBoundingBoxes[0].forEach((box, index) => {
       this.boundingBoxes.push([box[0], box[1], box[2], box[3], this.labelMapping[this.detectedLabels[0][index]]]);
     });
@@ -174,7 +190,7 @@ export class AppComponent {
       parent.removeChild(parent.firstChild);
     }
     const data = {
-      'annotation': '"' + jsonData + '"',
+      'annotation': jsonData,
       'name': this.imgName
     };
     return new Promise((resolve, reject) => {
